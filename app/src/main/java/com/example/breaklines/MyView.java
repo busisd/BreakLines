@@ -88,4 +88,4 @@ public class MyView extends View {
 //Use fewer pixels
 //Use getpixels() instead of getpixel()
 //Use a canvas to draw onto the bitmap directly.
-//Possibley, I could use a clever use of drawlines()?
+//Possibly, I could use a clever use of drawlines()?
