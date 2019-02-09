@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
     public void drawTick(){
         //Note: this if statement is needed or else the timer starts trying to draw stuff before the program is loaded.
         if (backgroundView.getScreenSize() != null && backgroundView.getBitmap() != null) {
-            backgroundView.shiftUp();
-            if (counter%600 == 0) backgroundView.addSquare();
+            backgroundView.shiftBitmap2Up();
+            if (counter%60 == 0) backgroundView.addSquare();
             backgroundView.invalidate();
         }
         repeat.start();

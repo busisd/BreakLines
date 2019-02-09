@@ -7,14 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 public class MyView extends View {
     Bitmap bitmap;
+    Bitmap bitmap2;
     Canvas bitmapEditor;
+    Canvas bitmap2Editor;
     Rect screenSize;
     Rect bitmapSize;
+    int[] colorArray;
 
     public MyView(Context context) {
         super(context);
@@ -32,6 +34,9 @@ public class MyView extends View {
         init();
     }
 
+    private Paint grayPaint;
+    private Paint blackPaint;
+    private Paint bluePaint;
     private void init(){
         grayPaint = new Paint();
         grayPaint.setColor(Color.GRAY);
@@ -55,6 +60,15 @@ public class MyView extends View {
         for (int i=0; i<bitmapSize.width()/2; i++) {
             for (int j = 0; j < bitmapSize.height()/2; j++) {
                 bitmap.setPixel(i, j, Color.RED);
+                colorArray[j*bitmapSize.width()+i] = Color.RED;
+            }
+        }
+    }
+
+    public void shiftBitmap2Up(){
+        for (int i=0; i<bitmapSize.width(); i++) {
+            for (int j = 0; j < bitmapSize.height()-1; j++) {
+                colorArray[j*bitmapSize.width()+i] = colorArray[(j+1)*bitmapSize.width()+i];
             }
         }
     }
@@ -67,9 +81,11 @@ public class MyView extends View {
         screenSize = new Rect(0,0,xNew,yNew);
         bitmapSize = new Rect(0,0,xNew/4,yNew/4);
         bitmap = Bitmap.createBitmap(bitmapSize.width(),bitmapSize.height(), Bitmap.Config.RGB_565);
+        bitmap2 = Bitmap.createBitmap(bitmapSize.width(),bitmapSize.height(), Bitmap.Config.RGB_565);
         bitmapEditor = new Canvas(bitmap);
+        bitmap2Editor = new Canvas(bitmap2);
+        colorArray = new int[bitmapSize.width()*bitmapSize.height()];
         drawRedSquare();
-        Log.i("SIZE", Integer.toString(xNew)+" "+Integer.toString(yNew));
     }
 
     @Override
@@ -90,7 +106,8 @@ public class MyView extends View {
 
         bitmapEditor.drawLine(0, lineYPos, bitmapSize.width(), lineYPos, grayPaint);
         bitmapEditor.drawLine(0, lineYPosPrev, bitmapSize.width(), lineYPosPrev, blackPaint);
-        canvas.drawBitmap(bitmap, null, screenSize, null);
+        bitmap2.setPixels(colorArray, 0, bitmapSize.width(),0,0,bitmapSize.width(),bitmapSize.height());
+        canvas.drawBitmap(bitmap2, null, screenSize, null);
     }
 
     public void addSquare(){
@@ -99,15 +116,14 @@ public class MyView extends View {
 
         for (int i=a; i<a+100; i++) {
             for (int j = b; j < b + 100; j++) {
-                bitmap.setPixel(i, j, Color.BLUE);
+//                bitmap.setPixel(i, j, Color.BLUE);
+                colorArray[i+j*bitmapSize.width()] = Color.BLUE;
             }
         }
     }
 
     private float lineYPosPrev = 0;
     private float lineYPos = 4;
-    private Paint grayPaint;
-    private Paint blackPaint;
     public void shiftUp(){
 //        for (int i=0; i<screenSize.width(); i++) {
 //            for (int j=0; j<screenSize.height()-30; j++) {
@@ -117,15 +133,15 @@ public class MyView extends View {
         //bitmap = Bitmap.createBitmap(screenSize.width(),screenSize.height(), Bitmap.Config.RGB_565);
         lineYPosPrev++;
         lineYPos++;
-        if (lineYPos>1000) {
+        if (lineYPos>bitmapSize.height()) {
             lineYPos = 0;
         }
-        if (lineYPosPrev>1000) {
+        if (lineYPosPrev>bitmapSize.height()) {
             lineYPosPrev = 0;
         }
-        if (lineYPos == 230){
-            bitmapEditor.drawLine(0, lineYPos, screenSize.width(), lineYPos, grayPaint);
-        }
+//        if (lineYPos == 230){
+//            bitmapEditor.drawLine(0, lineYPos, screenSize.width(), lineYPos, grayPaint);
+//        }
     }
 }
 
