@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private MyView backgroundView;
@@ -15,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         backgroundView = findViewById(R.id.breakLinesView);
-        repeat = new CountDownTimer((long) 166.66666,20) {
+        repeat = new CountDownTimer((long) 16.6666,20) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -29,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void drawTick(){
-        backgroundView.addSquare();
-        backgroundView.invalidate();
+        //Note: this if statement is needed or else the timer starts trying to draw stuff before the program is loaded.
+        if (backgroundView.getSize() != null && backgroundView.getBitmap() != null) {
+            backgroundView.shiftUp();
+            //backgroundView.addSquare();
+            backgroundView.invalidate();
+        }
         repeat.start();
     }
 
