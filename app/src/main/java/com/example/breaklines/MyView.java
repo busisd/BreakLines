@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
+import static java.lang.System.arraycopy;
+
 public class MyView extends View {
     Bitmap bitmap;
     Bitmap bitmap2;
@@ -66,10 +68,18 @@ public class MyView extends View {
     }
 
     public void shiftBitmap2Up(){
-        for (int i=0; i<bitmapSize.width(); i++) {
-            for (int j = 0; j < bitmapSize.height()-1; j++) {
-                colorArray[j*bitmapSize.width()+i] = colorArray[(j+1)*bitmapSize.width()+i];
-            }
+//        for (int i=0; i<bitmapSize.width(); i++) {
+//            for (int j = 0; j < bitmapSize.height()-1; j++) {
+//                colorArray[j*bitmapSize.width()+i] = colorArray[(j+1)*bitmapSize.width()+i];
+//            }
+//        }
+
+        arraycopy(colorArray, bitmapSize.width(), colorArray, 0, (bitmapSize.width()*(bitmapSize.height()-1)));
+        //Note: The above line copies the old array into the new array, shifted by one row.
+        //However, it leaves the very bottom row as it was before, instead of shifting in blank pixels.
+        //So the below loop replaces those pixels with all black.
+        for (int i=colorArray.length-bitmapSize.width(); i<colorArray.length;i++) {
+            colorArray[i] = Color.BLACK;
         }
     }
 
