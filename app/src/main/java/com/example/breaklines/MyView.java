@@ -43,13 +43,14 @@ public class MyView extends View {
         return bitmap;
     }
 
-    public void shiftBitmap2Up() {
+    private int rowDelta = 3; //Number of rows back the new pixel is copied from
+    public void shiftBitmap2Down() {
         int a = (int) (Math.random() * 1.5);
-        arraycopy(colorArray, 0, colorArray, bitmapSize.width() * 2 + a, (bitmapSize.width() * (bitmapSize.height() - 3)));
+        arraycopy(colorArray, 0, colorArray, bitmapSize.width() * rowDelta + a, (bitmapSize.width() * (bitmapSize.height() - rowDelta) - a));
         //Note: The above line copies the old array into the new array, shifted by one row.
         //However, it leaves the very bottom row as it was before, instead of shifting in blank pixels.
         //So the below loop replaces those pixels with all black.
-        for (int i = 0; i < bitmapSize.width() * 2 + a; i++) {
+        for (int i = 0; i < bitmapSize.width() * rowDelta + a; i++) {
             colorArray[i] = Color.BLACK;
         }
     }
@@ -72,12 +73,12 @@ public class MyView extends View {
         canvas.drawBitmap(bitmap, null, screenSize, null);
     }
 
-    public void addSquare() {
-        int a = (int) (Math.random() * (bitmapSize.width() - 100));
-        int b = (int) (Math.random() * (bitmapSize.height() - 100));
+    private final Rect dropSize = new Rect(0,0,3,8);
+    public void addDrop() {
+        int horizStart = (int) (Math.random() * (bitmapSize.width() - dropSize.width()));
 
-        for (int i = a; i < a + 100; i++) {
-            for (int j = b; j < b + 100; j++) {
+        for (int i = horizStart; i < horizStart+dropSize.width(); i++) {
+            for (int j = 0; j < dropSize.height(); j++) {
                 colorArray[i + j * bitmapSize.width()] = Color.BLUE;
             }
         }
