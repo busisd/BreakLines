@@ -14,18 +14,15 @@ public class MyView extends View {
 
     public MyView(Context context) {
         super(context);
-        init();
     }
 
+    // This constructor required when the view is in xml.
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
-    private void init(){
-        int width = getWidth();
-        int height = getHeight();
-
+    public MyView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     //Note: We override this so that the size of our view will be defined.
