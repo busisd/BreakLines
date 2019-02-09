@@ -35,6 +35,8 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
+        super.onDraw(canvas);
+
         //Note: We have to wait for the first onDraw() to be called before size will be defined by onSizeChanged
         if (bitmap == null){
             bitmap = Bitmap.createBitmap(size.width(),size.height(), Bitmap.Config.RGB_565);
@@ -44,10 +46,19 @@ public class MyView extends View {
                     bitmap.setPixel(i, j, Color.RED);
                 }
             }
-
         }
 
-        super.onDraw(canvas);
         canvas.drawBitmap(bitmap, null, size, null);
+    }
+
+    public void addSquare(){
+        int a = (int)(Math.random()*(size.width()-100));
+        int b = (int)(Math.random()*(size.height()-100));
+
+        for (int i=a; i<a+100; i++) {
+            for (int j = b; j < b + 100; j++) {
+                bitmap.setPixel(i, j, Color.BLUE);
+            }
+        }
     }
 }
