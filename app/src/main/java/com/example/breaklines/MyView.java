@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class MyView extends View {
     Bitmap bitmap;
     Canvas bitmapEditor;
-    Rect size;
+    Rect screenSize;
+    Rect bitmapSize;
 
     public MyView(Context context) {
         super(context);
@@ -41,46 +43,59 @@ public class MyView extends View {
         blackPaint.setStrokeWidth(8);
     }
 
-    public Rect getSize(){
-        return size;
+    public Rect getScreenSize(){
+        return screenSize;
     }
 
     public Bitmap getBitmap() {
         return bitmap;
     }
 
-    //Note: We override this so that the size of our view will be defined.
+    private void drawRedSquare(){
+        for (int i=0; i<bitmapSize.width()/2; i++) {
+            for (int j = 0; j < bitmapSize.height()/2; j++) {
+                bitmap.setPixel(i, j, Color.RED);
+            }
+        }
+    }
+
+    //Note: We override this so that the screenSize of our view will be defined.
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
         super.onSizeChanged(xNew, yNew, xOld, yOld);
 
-        size = new Rect(0,0,xNew,yNew);
+        screenSize = new Rect(0,0,xNew,yNew);
+        bitmapSize = new Rect(0,0,xNew/4,yNew/4);
+        bitmap = Bitmap.createBitmap(bitmapSize.width(),bitmapSize.height(), Bitmap.Config.RGB_565);
+        bitmapEditor = new Canvas(bitmap);
+        drawRedSquare();
+        Log.i("SIZE", Integer.toString(xNew)+" "+Integer.toString(yNew));
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
 
-        //Note: We have to wait for the first onDraw() to be called before size will be defined by onSizeChanged
-        if (bitmap == null){
-            bitmap = Bitmap.createBitmap(1000,1000, Bitmap.Config.RGB_565);
+        //Note: We have to wait for the first onDraw() to be called before screenSize will be defined by onSizeChanged
+//        if (bitmap == null){
+//            bitmap = Bitmap.createBitmap(bitmapSize.width(),bitmapSize.height(), Bitmap.Config.RGB_565);
+//
+//            for (int i=0; i<bitmapSize.width()/2; i++) {
+//                for (int j = 0; j < bitmapSize.height()/2; j++) {
+//                    bitmap.setPixel(i, j, Color.RED);
+//                }
+//            }
+//            bitmapEditor = new Canvas(bitmap);
+//        }
 
-            for (int i=0; i<1000/2; i++) {
-                for (int j = 0; j < 1000/2; j++) {
-                    bitmap.setPixel(i, j, Color.RED);
-                }
-            }
-            bitmapEditor = new Canvas(bitmap);
-        }
-
-        bitmapEditor.drawLine(0, lineYPos, 1000, lineYPos, grayPaint);
-        bitmapEditor.drawLine(0, lineYPosPrev, 1000, lineYPosPrev, blackPaint);
-        canvas.drawBitmap(bitmap, null, size, null);
+        bitmapEditor.drawLine(0, lineYPos, bitmapSize.width(), lineYPos, grayPaint);
+        bitmapEditor.drawLine(0, lineYPosPrev, bitmapSize.width(), lineYPosPrev, blackPaint);
+        canvas.drawBitmap(bitmap, null, screenSize, null);
     }
 
     public void addSquare(){
-        int a = (int)(Math.random()*(size.width()-100));
-        int b = (int)(Math.random()*(size.height()-100));
+        int a = (int)(Math.random()*(bitmapSize.width()-100));
+        int b = (int)(Math.random()*(bitmapSize.height()-100));
 
         for (int i=a; i<a+100; i++) {
             for (int j = b; j < b + 100; j++) {
@@ -94,12 +109,12 @@ public class MyView extends View {
     private Paint grayPaint;
     private Paint blackPaint;
     public void shiftUp(){
-//        for (int i=0; i<size.width(); i++) {
-//            for (int j=0; j<size.height()-30; j++) {
+//        for (int i=0; i<screenSize.width(); i++) {
+//            for (int j=0; j<screenSize.height()-30; j++) {
 //                bitmap.setPixel(i, j, bitmap.getPixel(i, j+30));
 //            }
 //        }
-        //bitmap = Bitmap.createBitmap(size.width(),size.height(), Bitmap.Config.RGB_565);
+        //bitmap = Bitmap.createBitmap(screenSize.width(),screenSize.height(), Bitmap.Config.RGB_565);
         lineYPosPrev++;
         lineYPos++;
         if (lineYPos>1000) {
@@ -109,7 +124,7 @@ public class MyView extends View {
             lineYPosPrev = 0;
         }
         if (lineYPos == 230){
-            bitmapEditor.drawLine(0, lineYPos, size.width(), lineYPos, grayPaint);
+            bitmapEditor.drawLine(0, lineYPos, screenSize.width(), lineYPos, grayPaint);
         }
     }
 }
