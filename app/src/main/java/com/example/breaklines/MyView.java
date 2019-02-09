@@ -44,8 +44,8 @@ public class MyView extends View {
     }
 
     private int rowDelta = 3; //Number of rows back the new pixel is copied from
-    public void shiftBitmap2Down() {
-        int a = (int) (Math.random() * 1.5);
+    public void shiftBitmap2Down(double tiltAmount) {
+        int a = (int) (Math.random() * tiltAmount);
         arraycopy(colorArray, 0, colorArray, bitmapSize.width() * rowDelta + a, (bitmapSize.width() * (bitmapSize.height() - rowDelta) - a));
         //Note: The above line copies the old array into the new array, shifted by one row.
         //However, it leaves the very bottom row as it was before, instead of shifting in blank pixels.
