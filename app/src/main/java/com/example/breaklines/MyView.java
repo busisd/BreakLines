@@ -9,6 +9,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.Arrays;
+
 import static java.lang.System.arraycopy;
 
 public class MyView extends View {
@@ -16,6 +18,7 @@ public class MyView extends View {
     Rect screenSize;
     Rect bitmapSize;
     int[] colorArray;
+    private final int DEFAULT_BG_COLOR = Color.DKGRAY;
 
     public MyView(Context context) {
         super(context);
@@ -47,14 +50,13 @@ public class MyView extends View {
     private int rowDelta = 5; //Number of rows back the new pixel is copied from
     public void shiftBitmap2Down(double tiltAmount) {
         float tiltMult = (float) ((Math.abs(tiltAmount*5.0))*Math.signum(tiltAmount));
-        Log.i("TILTMULT", Float.toString(tiltMult));
         int a = (int)tiltMult + (int)(Math.random() * tiltMult%1);
         arraycopy(colorArray, 0, colorArray, bitmapSize.width() * rowDelta + a, (bitmapSize.width() * (bitmapSize.height() - rowDelta) - a));
         //Note: The above line copies the old array into the new array, shifted by one row.
         //However, it leaves the very bottom row as it was before, instead of shifting in blank pixels.
-        //So the below loop replaces those pixels with all black.
+        //So the below loop replaces those pixels with all default color.
         for (int i = 0; i < bitmapSize.width() * rowDelta + a; i++) {
-            colorArray[i] = Color.BLACK;
+            colorArray[i] = DEFAULT_BG_COLOR;
         }
     }
 
@@ -67,6 +69,7 @@ public class MyView extends View {
         bitmapSize = new Rect(0, 0, xNew / 4, yNew / 4);
         bitmap = Bitmap.createBitmap(bitmapSize.width(), bitmapSize.height(), Bitmap.Config.RGB_565);
         colorArray = new int[bitmapSize.width() * bitmapSize.height()];
+        Arrays.fill(colorArray, DEFAULT_BG_COLOR); //Set the initial color array to the background color
     }
 
     @Override

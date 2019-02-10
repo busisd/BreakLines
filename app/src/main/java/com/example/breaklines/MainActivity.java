@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //Note: this if statement is needed or else the timer starts trying to draw stuff before the program is loaded.
         if (backgroundView.getScreenSize() != null && backgroundView.getBitmap() != null) {
             backgroundView.shiftBitmap2Down(orientation[2]);
-            if (counter%3 == 0) backgroundView.addDrop();
+            if (counter%2 == 0) backgroundView.addDrop();
             backgroundView.invalidate();
         }
         repeat.start();
