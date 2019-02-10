@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import static java.lang.System.arraycopy;
@@ -43,9 +44,11 @@ public class MyView extends View {
         return bitmap;
     }
 
-    private int rowDelta = 3; //Number of rows back the new pixel is copied from
+    private int rowDelta = 5; //Number of rows back the new pixel is copied from
     public void shiftBitmap2Down(double tiltAmount) {
-        int a = (int) (Math.random() * tiltAmount);
+        float tiltMult = (float) ((Math.abs(tiltAmount*5.0))*Math.signum(tiltAmount));
+        Log.i("TILTMULT", Float.toString(tiltMult));
+        int a = (int)tiltMult + (int)(Math.random() * tiltMult%1);
         arraycopy(colorArray, 0, colorArray, bitmapSize.width() * rowDelta + a, (bitmapSize.width() * (bitmapSize.height() - rowDelta) - a));
         //Note: The above line copies the old array into the new array, shifted by one row.
         //However, it leaves the very bottom row as it was before, instead of shifting in blank pixels.
